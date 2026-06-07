@@ -18,7 +18,13 @@ app.use(
     credentials: true,
   }),
 );
-app.use("/api/inngest",serve({client:inngest},functions))
+app.use(
+  "/api/inngest",
+  serve({
+    client: inngest,
+    functions,
+  }),
+);
 console.log(ENV.PORT);
 
 app.get("/health", (req, res) => {
