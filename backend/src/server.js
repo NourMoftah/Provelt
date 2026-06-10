@@ -4,10 +4,11 @@ import cors from "cors";
 import path from "path";
 import { serve } from "inngest/express";
 import { clerkMiddleware } from "@clerk/express";
+import chatRoutes from "./routes/chatRoutes.js";
 
 import { connectDB } from "./lib/db.js";
 import { functions, inngest } from "./lib/inngest.js";
-import { protectRoute } from "./middleware/protectRouter.js";
+// import { protectRoute } from "./middleware/protectRouter.js";
 
 const app = express();
 app.use(clerkMiddleware());
@@ -27,13 +28,12 @@ app.use(
     functions,
   }),
 );
-app.use("api/chat", chatRouter)
+app.use("/api/chat", chatRoutes);
 console.log(ENV.PORT);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ msg: "you did it" });
 });
-
 
 if (ENV.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
