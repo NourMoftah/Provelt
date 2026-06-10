@@ -3,12 +3,14 @@ import { ENV } from "./lib/env.js";
 import cors from "cors";
 import path from "path";
 import { serve } from "inngest/express";
+import { clerkMiddleware } from "@clerk/express";
 
 import { connectDB } from "./lib/db.js";
 import { functions, inngest } from "./lib/inngest.js";
+import { protectRoute } from "./middleware/protectRouter.js";
 
 const app = express();
-
+app.use(clerkMiddleware());
 const __dirname = path.resolve();
 // middleware
 app.use(express.json());
@@ -25,14 +27,13 @@ app.use(
     functions,
   }),
 );
+app.use("api/chat", chatRouter)
 console.log(ENV.PORT);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ msg: "you did it" });
 });
-app.get("/books", (req, res) => {
-  res.status(200).json({ msg: "box endpoint" });
-});
+
 
 if (ENV.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
